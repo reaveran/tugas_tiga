@@ -135,10 +135,20 @@ class ArticlesController extends \BaseController {
 		    ->withErrors($validate)
 		    ->withInput();
 		} else {
-		    $validation = Validator::make($input, $rules);
-	    	$mimes = array('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','text/plain','text/csv','text/tsv');
-			if(in_array($_FILES['file']['type'],$mimes)){
-		        $file2 = Input::file('file')->move(storage_path(),$file->getClientOriginalName());
+			$input = array(
+		    	'mimeType' => $_FILES['file']['type']
+			);
+
+			$messages = array(
+				'mimeType' => 'File must MS Excel.',
+			);
+			$validation = Validator::make($input, Article::valid2(), $messages);
+
+			if($validation->fails()){
+		        Session::flash('notice', 'file must excel file');
+				return Redirect::to('articles/create');
+			} else {
+				$file2 = Input::file('file')->move(storage_path(),$file->getClientOriginalName());
 		        $import = Excel::selectSheetsByIndex(0)->load('app/storage/'.$file->getClientOriginalName(), function($reader) {})->get();
 		        $reads = $import->toArray();
 
@@ -171,27 +181,26 @@ class ArticlesController extends \BaseController {
 					Session::flash('notice', 'Success add article');
 					return Redirect::to('articles');
 				}	
-			} else {
-			  	Session::flash('notice', 'file must excel file');
-				return Redirect::to('articles/create');
 			}
         }
     }
     // -------------- export ----------------------------
     public function download()
-	{
-		
-		
+	{	
 		Excel::create('download', function($excel) {
-		    $excel->sheet('sheet', function($sheet) {
+		    $excel->sheet('article', function($sheet) {
+		    	$sheet->setHeight(1,20);
 		    	$sheet->setAutoSize(false);
 		    	$sheet->cells('A1:C1', function($cells) {
-				    $cells->setFontWeight('bold');
+				    $cells->setFontSize(12);
+				    $cells->setBackground('#66CCFF');
+				});
+				$sheet->cells('B2', function($cells) {
+				    $cells->setValignment('Middle');
 				});
 				$sheet->setSize('B2', 40, 200);
 				$sheet->cells('B2', function($cells) {
-				    $cells->setAlignment('justify');
-				    $cells->setValignment('middle');
+				    $cells->setAlignment('justify'); 
 				});
 		    	$id=Input::get('id');
 		    	$article = Article::find($id);
@@ -202,20 +211,25 @@ class ArticlesController extends \BaseController {
 				$sheet->row(2, array(
 				    $article->title, $article->content,$article->author
 				));
-				$sheet->row(4, array(
-				    'comment: '
-				));
-				$sheet->cells('A5:B5', function($cells) {
-				    $cells->setFontWeight('bold');
+		    });
+			$excel->sheet('comment', function($sheet) {
+		    	$sheet->setHeight(1,20);
+		    	$sheet->setAutoSize(false);
+		    	$sheet->cells('A1:C1', function($cells) {
+				    $cells->setFontSize(12);
+				    $cells->setBackground('#66CCFF');
 				});
-				$sheet->row(5, array(
-				    'user','content'
+		    	$id=Input::get('id');
+				$comments = Article::find($id)->comments;
+		        $sheet->row(1, array(
+				    'no', 'content','user'
 				));
-				$i=6;
+				$i=2;
 				foreach ($comments as $key => $comment) {
 					$sheet->row($i, array(
-				    	$comment->user,$comment->content
+				    	$i-1,$comment->content,$comment->user
 					));
+					$sheet->setHeight($i,20);
 					$i++;
 				}
 		    });

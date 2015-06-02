@@ -1,5 +1,8 @@
 @extends("layouts.application")
 @section("content")
+@if (Session::has('notice'))
+    <div class="alert alert-info">{{Session::get('notice')}}</div>
+@endif
 	<div class="row">
 		<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
 			

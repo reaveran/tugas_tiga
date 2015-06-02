@@ -6,7 +6,7 @@ class Comment extends \Eloquent {
   	}
   	public static function valid($id='') {
       return array(
-        'content' => 'required|min:5|unique:articles,content'.($id ? ",$id" : ''),
+        'content' => 'required|min:5'.($id ? ",$id" : ''),
         'user' => 'required'
       );
   }

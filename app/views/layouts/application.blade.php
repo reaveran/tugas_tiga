@@ -4,7 +4,7 @@
       	<meta charset="utf-8">
 	    <meta httpequiv="XUACompatible" content="IE=edge">
 		<meta name="viewport" content="width=devicewidth, initialscale=1">
-		<title>Crud Image</title>
+		<title>Article</title>
 	    <?= stylesheetLinkTag() ?>
 	    <?= javascript_include_tag() ?>
     </head>
