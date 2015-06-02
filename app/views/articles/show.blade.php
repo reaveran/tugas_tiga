@@ -1,11 +1,24 @@
 @extends("layouts.application")
 @section("content")
 	<div class="row">
-		{{ Form::open(array('url' => 'articles/download', 'class' => '', 'files' => true , 'method' => 'post', 'role' => 'form')) }}
+		<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+			
+		</div>
+		<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+			{{ Form::open(array('url' => 'articles/download', 'class' => '', 'files' => true , 'method' => 'post', 'role' => 'form')) }}
 	    	{{Form::hidden('id', $article->id, array('class' => '', 'autofocus' => 'true'))}}
-	      	{{Form::submit('Download Article', array('class' => 'btn btn-primary'))}}
+	      	{{Form::submit('Download Article as .xls', array('class' => 'btn btn-primary'))}}
 	      	<div class="clear"></div>
-		{{ Form::close() }}
+			{{ Form::close() }}
+		</div>
+		<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+			{{ Form::open(array('url' => 'articles/download2', 'class' => '', 'files' => true , 'method' => 'post', 'role' => 'form')) }}
+	    	{{Form::hidden('id', $article->id, array('class' => '', 'autofocus' => 'true'))}}
+	      	{{Form::submit('Download Article as .pdf', array('class' => 'btn btn-primary'))}}
+	      	<div class="clear"></div>
+			{{ Form::close() }}
+		</div>
+		
 	</div>
 	<div class="row">
 	    <h1>{{$article->title}}</h1>

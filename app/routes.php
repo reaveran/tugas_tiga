@@ -19,3 +19,4 @@ Route::get('/', function()
 
 Route::post('articles/import', "ArticlesController@importUserList");
 Route::post('articles/download', "ArticlesController@download");
+Route::post('articles/download2', "ArticlesController@download2");

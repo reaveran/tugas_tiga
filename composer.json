@@ -6,7 +6,8 @@
 	"require": {
 		"laravel/framework": "4.2.*",
 		"codesleeve/asset-pipeline": "dev-master",
-		"maatwebsite/excel": "1.*"
+		"maatwebsite/excel": "1.*",
+		"barryvdh/laravel-dompdf": "*"
 	},
 	"require-dev": {
     	"way/generators": "~2.0"

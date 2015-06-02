@@ -188,6 +188,11 @@ class ArticlesController extends \BaseController {
 		    	$sheet->cells('A1:C1', function($cells) {
 				    $cells->setFontWeight('bold');
 				});
+				$sheet->setSize('B2', 40, 200);
+				$sheet->cells('B2', function($cells) {
+				    $cells->setAlignment('justify');
+				    $cells->setValignment('middle');
+				});
 		    	$id=Input::get('id');
 		    	$article = Article::find($id);
 				$comments = Article::find($id)->comments;
@@ -219,4 +224,33 @@ class ArticlesController extends \BaseController {
 		return Redirect::to('articles/index');
 	}
 
+	public function download2()
+	{	
+		$id=Input::get('id');
+		$article = Article::find($id);
+		$temp = "	<div class='row'>
+		    			<h1>{$article->title}</h1>
+		    			<p>{$article->content}</p>
+		    			<i>By {$article->author}</i>
+					</div>
+					<hr>
+					<div class='row'>
+						<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' style='border-bottom:1px solid #DDDDD9'>
+							<b>comment : </b>
+						</div>
+					</div>";
+		$comments = Article::find($id)->comments;
+		foreach ($comments as $key => $comment) {
+			$temp = $temp."	<div class='row'>
+			    			<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' style='border-bottom:1px solid #DDDDD9'>
+						    	<i style='color:blue'>{$comment->user}</i>
+						    	<p>{$comment->content}</p>
+			    			</div>	
+							</div>
+							<br>";
+		}
+					
+		$pdf = PDF::loadHTML($temp);
+		return $pdf->download('download.pdf');
+	}
 }
